@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — Sentry</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fonts/local-fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body class="auth-body">
+
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+          <path d="M12 8v4"/>
+          <path d="M12 16h.01"/>
+        </svg>
+      </div>
+      <div>
+        <div class="auth-title">SENTRY</div>
+        <div class="auth-subtitle">Security Department Access Only</div>
+      </div>
+    </div>
+
+    <p class="auth-desc">
+      This dashboard shows failed logins and suspicious activity for the
+      monitored system. Access is restricted to Security Department members.
+    </p>
+
+    {% if error %}
+      <div class="auth-error">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" class="auth-form">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="username" required autofocus>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" required>
+
+      <button type="submit" class="btn-simulate auth-submit">Sign In</button>
+    </form>
+
+    <div class="auth-footnote">
+      Demo credentials (for review purposes): <code>admin</code> / <code>Sentry@123</code>
+    </div>
+  </div>
+
+</body>
+</html>

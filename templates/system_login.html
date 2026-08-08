@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Company Portal — Sign In</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='vendor/fonts/local-fonts.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}">
+</head>
+<body class="auth-body">
+
+  <div class="auth-card">
+    <div class="auth-brand">
+      <div class="brand-icon">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="10" rx="2"/>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="auth-title">COMPANY PORTAL</div>
+        <div class="auth-subtitle">This is the monitored system, not Sentry</div>
+      </div>
+    </div>
+
+    <div class="auth-note">
+      This is a demo login form for the system Sentry is watching. Any
+      attempt made here — success or failure — is logged as a real event
+      and immediately counted on the Sentry dashboard (Failed Attempts
+      and the activity chart update right away).
+      <br><br>
+      Note: Sentry only flags an IP as <strong>suspicious</strong> — and
+      lights up the Live Alert Feed and Flagged IPs table — once it sees
+      5+ failed attempts in 15 minutes. A single mistyped password won't
+      trigger that on its own, by design (that's what makes it a
+      detection system and not just a log viewer). Use the "Trigger
+      Detection Now" button below for the full live effect.
+    </div>
+
+    {% if result %}
+      {% if result.success %}
+        <div class="auth-success">
+          ✓ Login succeeded for <strong>{{ result.username }}</strong> at {{ result.timestamp }}.
+          This was logged as a successful login event.
+        </div>
+      {% elif result.burst %}
+        <div class="auth-error">
+          ⚡ {{ result.reason }} for <strong>{{ result.username }}</strong>.
+          Refresh the Sentry dashboard now — this IP should be flagged as
+          suspicious, with entries in the Live Alert Feed and the Flagged
+          IPs table.
+        </div>
+      {% else %}
+        <div class="auth-error">
+          ✗ Login failed for <strong>{{ result.username }}</strong> ({{ result.reason.replace('_', ' ') }}) at {{ result.timestamp }}.
+          This was logged as a failed login event — check the Sentry Failed
+          Attempts counter and activity chart now.
+        </div>
+      {% endif %}
+    {% endif %}
+
+    <form method="POST" class="auth-form">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" autocomplete="off" placeholder="e.g. admin.james" required autofocus>
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" autocomplete="off" placeholder="Try the wrong one on purpose">
+
+      <button type="submit" class="btn-simulate auth-submit">Sign In</button>
+    </form>
+
+    <form method="POST" action="{{ url_for('system_login_trigger_detection') }}" class="auth-form" style="margin-top: 10px;">
+      <input type="hidden" name="username" id="burstUsernameHidden" value="admin.james">
+      <button type="submit" class="btn-excel auth-submit" onclick="document.getElementById('burstUsernameHidden').value = document.getElementById('username').value || 'admin.james';">
+        ⚡ Trigger Detection Now (6 rapid fails)
+      </button>
+    </form>
+
+    <div class="auth-footnote">
+      Demo tip: the correct password for any known user (e.g. <code>admin.james</code>,
+      <code>sarah.dev</code>, <code>taylor.sec</code>) is <code>Demo@123</code>.
+      Enter anything else to intentionally trigger a failed login.
+    </div>
+
+    <a href="{{ url_for('index') }}" class="auth-back-link">← Back to Sentry dashboard</a>
+  </div>
+
+</body>
+</html>
